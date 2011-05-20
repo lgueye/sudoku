@@ -60,6 +60,8 @@ public class Sudoku {
     }
 
     /**
+     * Parses every single char on a string and tries to convert it to
+     * 
      * @param string
      * @return
      */
