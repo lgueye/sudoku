@@ -1,6 +1,3 @@
-/*
- * Copyright 2009 Adenclassifieds. All rights reserved.
- */
 package org.diveintojee.sudoku;
 
 import org.apache.commons.lang.RandomStringUtils;
@@ -10,11 +7,83 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author lgueye
+ * @author louis.gueye@gmail.com
  */
 public class SudokuTest {
 
     private Sudoku underTest;
+
+    @Test
+    public void allowedOnColumn() {
+
+        // When
+        boolean result = true;
+
+        // On column 0 the above values are not allowed
+        result = underTest.allowedOnColumn(9, 0);
+        Assert.assertFalse(result);
+
+        result = underTest.allowedOnColumn(8, 0);
+        Assert.assertFalse(result);
+
+        result = underTest.allowedOnColumn(2, 0);
+        Assert.assertFalse(result);
+    }
+
+    @Test
+    public void allowedOnRow() {
+        // // Given
+        // final int[][] expected = { { 9, 0, 0, 1, 0, 0, 0, 0, 5 }, { 0, 0, 5, 0, 9, 0, 2, 0, 1 },
+        // { 8, 0, 0, 0, 4, 0, 0, 0, 0 }, { 0, 0, 0, 0, 8, 0, 0, 0, 0 }, { 0, 0, 0, 7, 0, 0, 0, 0, 0 },
+        // { 0, 0, 0, 0, 2, 6, 0, 0, 9 }, { 2, 0, 0, 3, 0, 0, 0, 0, 6 }, { 0, 0, 0, 2, 0, 0, 9, 0, 0 },
+        // { 0, 0, 1, 9, 0, 4, 5, 7, 0 } };
+        // final int[][] result = underTest.parse(underTest.getGridAsString());
+
+        // When
+        boolean result = true;
+
+        // On row 0 the above values are not allowed
+        result = underTest.allowedOnRow(9, 0);
+        Assert.assertFalse(result);
+
+        result = underTest.allowedOnRow(1, 0);
+        Assert.assertFalse(result);
+
+        result = underTest.allowedOnRow(5, 0);
+        Assert.assertFalse(result);
+
+        // On row 1 the above values are not allowed
+        result = underTest.allowedOnRow(5, 1);
+        Assert.assertFalse(result);
+
+        result = underTest.allowedOnRow(9, 1);
+        Assert.assertFalse(result);
+
+        result = underTest.allowedOnRow(2, 1);
+        Assert.assertFalse(result);
+
+        result = underTest.allowedOnRow(1, 1);
+        Assert.assertFalse(result);
+
+        // etc.
+    }
+
+    @Test
+    public void allowedOnSquare() {
+
+        // When
+        boolean result = true;
+
+        // On column 0 the above values are not allowed
+        result = underTest.allowedOnSquare(9, 0, 1);
+        Assert.assertFalse(result);
+
+        result = underTest.allowedOnSquare(8, 0, 1);
+        Assert.assertFalse(result);
+
+        result = underTest.allowedOnSquare(5, 0, 0);
+        Assert.assertFalse(result);
+    }
 
     @Before
     public void before() {
@@ -32,8 +101,41 @@ public class SudokuTest {
     }
 
     @Test
+    public void cellSolvedIfLastCellIsReached() {
+        final int cellNumber = (int) Math.pow(underTest.getGridSideLength(), 2);
+        Assert.assertTrue(underTest.cellSolved(cellNumber));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getLastTermIndexShouldThrowIllegalArgumentExceptionWithEmptyString() {
+        Sudoku.getLastTermIndex(StringUtils.EMPTY, 3);
+    }
+
+    @Test
+    public void getLastTermIndexShouldThrowIllegalArgumentExceptionWithNonStrictlyPositiveStep() {
+        try {
+            Sudoku.getLastTermIndex("12345", 0);
+            Assert.fail(IllegalArgumentException.class.getSimpleName() + " expected");
+        } catch (final IllegalArgumentException e) {
+
+        }
+        try {
+            Sudoku.getLastTermIndex("12345", -1);
+            Assert.fail(IllegalArgumentException.class.getSimpleName() + " expected");
+        } catch (final IllegalArgumentException e) {
+
+        }
+
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getLastTermIndexShouldThrowIllegalArgumentExceptionWithNullString() {
+        Sudoku.getLastTermIndex(null, 3);
+    }
+
+    @Test
     public void gridSideLength() {
-        Assert.assertEquals(9, underTest.getGridSideLength());
+        Assert.assertEquals((int) Math.pow(underTest.getSquareSideLength(), 2), underTest.getGridSideLength());
     }
 
     @Test
@@ -43,7 +145,9 @@ public class SudokuTest {
                 { 0, 0, 0, 0, 2, 6, 0, 0, 9 }, { 2, 0, 0, 3, 0, 0, 0, 0, 6 }, { 0, 0, 0, 2, 0, 0, 9, 0, 0 },
                 { 0, 0, 1, 9, 0, 4, 5, 7, 0 } };
 
-        final int[][] result = underTest.parse(underTest.getGridAsString());
+        underTest.parse(underTest.getGridAsString());
+
+        final int[][] result = underTest.getGrid();
 
         Assert.assertNotNull(result);
 
@@ -95,19 +199,6 @@ public class SudokuTest {
     public void parseShouldThrowIllegalArgumentExceptionWithNullGrid() {
         underTest.parse(null);
     }
-
-    // private void printIntArray(final String prefix, final int[] array) {
-    // if (ArrayUtils.isEmpty(array))
-    // return;
-    // final StringBuilder builder = new StringBuilder();
-    // builder.append("{");
-    // for (final int i : array) {
-    // builder.append(i + ", ");
-    // }
-    // builder.append("}");
-    // System.out.println(prefix + builder);
-    //
-    // }
 
     @Test
     public void splitShouldReturnArrayWithOneElementIfStringLengthIsLessThanOneStep() {

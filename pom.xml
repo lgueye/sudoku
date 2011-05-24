@@ -13,6 +13,8 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
+    <junit.version>4.8.2</junit.version>
+    <commons-lang.version>2.6</commons-lang.version>
   </properties>
 
   <dependencies>
