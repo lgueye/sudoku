@@ -12,6 +12,8 @@ import org.apache.commons.lang.StringUtils;
  */
 public class Sudoku {
 
+    private static final int[] POSSIBLE_VALUES = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
     /**
      * Given a string {source}, split every {step} characters<br/>
      * This methods returns the last term index
@@ -254,6 +256,10 @@ public class Sudoku {
 
     }
 
+    /**
+     * @param cellNumber
+     * @return
+     */
     public boolean cellSolved(final int cellNumber) {
 
         iterations++;
@@ -272,9 +278,7 @@ public class Sudoku {
         if (cellValue != 0)
             return cellSolved(nextCellNumber);
 
-        final int[] possibleValues = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-
-        for (final int candidateValue : possibleValues) {
+        for (final int candidateValue : Sudoku.POSSIBLE_VALUES) {
 
             if (allowedOnRow(candidateValue, rowIndex) && allowedOnColumn(candidateValue, columnIndex)
                 && allowedOnSquare(candidateValue, rowIndex, columnIndex)) {
@@ -291,6 +295,7 @@ public class Sudoku {
         setValueAt(0, rowIndex, columnIndex);
 
         return false;
+
     }
 
     /**
